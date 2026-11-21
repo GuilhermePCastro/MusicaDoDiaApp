@@ -1,0 +1,39 @@
+// Schema do Prisma ORM para o jogo "Música do Dia"
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Song {
+  id           String           @id @default(cuid())
+  title        String
+  artist       String
+  releaseYear  Int              @map("release_year")
+  genre        String
+  searchIndex  String           @map("search_index")
+  challenges   DailyChallenge[]
+
+  @@index([searchIndex])
+  @@map("songs")
+}
+
+model DailyChallenge {
+  id            String   @id @default(cuid())
+  // Armazenado no formato YYYY-MM-DD (referente ao fuso America/Sao_Paulo)
+  challengeDate String   @unique @map("challenge_date")
+  songId        String   @map("song_id")
+  song          Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+  initialLyric  String   @map("initial_lyric") @db.Text
+  hint1Lyric    String   @map("hint_1_lyric") @db.Text
+  hint2Lyric    String   @map("hint_2_lyric") @db.Text
+  // JSONB contendo { artist: string, year: number, genre: string }
+  hint3Metadata Json     @map("hint_3_metadata") @db.JsonB
+
+  @@index([challengeDate])
+  @@map("daily_challenges")
+}

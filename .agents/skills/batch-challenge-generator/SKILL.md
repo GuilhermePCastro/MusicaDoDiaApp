@@ -18,6 +18,9 @@ Para manter o jogo equilibrado e divertido, **nunca** coloque o refrão principa
 - **Equilíbrio de Catálogo:** Misture gêneros e décadas (ex: Rock Nacional anos 80/90, MPB, Pop Internacional, Sertanejo/Pagode clássicos, Indie/Pop atual) e **nunca repita o mesmo artista em dias consecutivos**.
 - **Sequência de Datas (`YYYY-MM-DD`):** Gere exatamente a quantidade de dias solicitada (padrão: 30 dias) em sequência ininterrupta a partir da data inicial informada pelo usuário (ou a partir da data atual em `America/Sao_Paulo`, caso não especificada).
 - **Normalização de Busca:** Garanta que o campo `search_index` de cada música seja gerado em minúsculas, sem acentos (`normalize('NFD').replace(/[\u0300-\u036f]/g, '')`), concatenando `${title} ${artist}`.
+- **Consulta Prévia Anti-Repetição (Obrigatório):** Antes de escolher as músicas do novo lote, consulte no banco de dados (ou leia o histórico existente) todas as músicas que já possuem desafios agendados em `daily_challenges` e a última `challenge_date` cadastrada.
+- **Continuidade Automática:** Se o usuário pedir "gere mais 30 dias" sem informar uma data inicial, inicie automaticamente no dia seguinte à última `challenge_date` registrada no banco.
+- **Zero Repetição:** É proibido incluir no novo lote qualquer música (`title` + `artist`) que já esteja presente na tabela `songs` ou `daily_challenges`, a menos que o usuário peça explicitamente para repetir.
 
 ## 3. Formato de Saída e Execução da Carga
 - **Nunca crie músicas fixas (hardcoded) dentro de `prisma/seed.ts`.** O arquivo `prisma/seed.ts` é apenas o leitor genérico do JSON.

@@ -63,7 +63,8 @@ export function EndGameModal({
   if (!isOpen) return null;
 
   const generateShareText = (): string => {
-    const score = status === "won" ? `${attempts.length}/${maxAttempts}` : `X/${maxAttempts}`;
+    const score =
+      status === "won" ? `${attempts.length}/${maxAttempts}` : `X/${maxAttempts}`;
     const emojiRow = Array.from({ length: maxAttempts }, (_, idx) => {
       const att = attempts[idx];
       if (!att) return "⬜";
@@ -72,7 +73,12 @@ export function EndGameModal({
       return "🟥";
     }).join("");
 
-    return `🎵 Música do Dia (${date}) - ${score}\n\n${emojiRow}\n\nJogue também!`;
+    const gameUrl =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://musicadodiaapp.vercel.app";
+
+    return `🎵 Música do Dia (${date}) - ${score}\n\n${emojiRow}\n\nJogue também: ${gameUrl}`;
   };
 
   const handleShare = async () => {
